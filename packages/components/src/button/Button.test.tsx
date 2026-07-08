@@ -160,4 +160,55 @@ describe('Button', () => {
       expect(screen.getByRole('button', { name: 'Next' })).toHaveFocus()
     })
   })
+
+  describe('Variant prop', () => {
+    it('should render with variant prop', () => {
+      const props = {
+        ...defaultProps,
+        variant: 'primary' as const,
+      }
+
+      render(<Button {...props} />)
+
+      expect(screen.getByRole('button', { name: props.children })).toBeInTheDocument()
+    })
+
+    it('should ignore design and intent when variant is specified', () => {
+      const props = {
+        ...defaultProps,
+        variant: 'primary' as const,
+        design: 'outlined' as const,
+        intent: 'success' as const,
+      }
+
+      render(<Button {...props} />)
+
+      const button = screen.getByRole('button', { name: props.children })
+      expect(button).toBeInTheDocument()
+      // The button should have primary variant styles (bg-main text-on-main)
+      expect(button.className).toContain('bg-main')
+      expect(button.className).toContain('text-on-main')
+    })
+
+    it.each([
+      'primary',
+      'secondary',
+      'tertiary',
+      'contrast',
+      'underline',
+      'success',
+      'danger',
+      'boost',
+      'AI',
+    ] as const)('should render %s variant', variant => {
+      const props = {
+        ...defaultProps,
+        variant,
+      }
+
+      render(<Button {...props} />)
+
+      expect(screen.getByRole('button', { name: props.children })).toBeInTheDocument()
+    })
+  })
 })

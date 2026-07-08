@@ -1,4 +1,5 @@
 import { Switch } from '@spark-ui/components/switch'
+import { Table } from '@spark-ui/components/table'
 import { Check } from '@spark-ui/icons/Check'
 import { FavoriteOutline } from '@spark-ui/icons/FavoriteOutline'
 import { Meta, StoryFn, StoryObj } from '@storybook/react-vite'
@@ -42,6 +43,17 @@ const intents: ButtonProps['intent'][] = [
 ]
 const designs: ButtonProps['design'][] = ['filled', 'outlined', 'tinted', 'contrast', 'ghost']
 const shapes: ButtonProps['shape'][] = ['rounded', 'square', 'pill']
+const variants: NonNullable<ButtonProps['variant']>[] = [
+  'primary',
+  'secondary',
+  'tertiary',
+  'contrast',
+  'underline',
+  'success',
+  'danger',
+  'boost',
+  'AI',
+]
 
 export const Default: StoryObj = {
   render: _args => {
@@ -206,5 +218,45 @@ export const Toggle: StoryFn = () => {
         </Icon>
       )}
     </Button>
+  )
+}
+
+export const Variants: StoryFn = _args => {
+  const variantRows = variants.map((variant, index) => ({
+    id: `variant-${index}`,
+    variant,
+  }))
+
+  return (
+    <Table>
+      <Table.Grid aria-label="Button variants by state">
+        <Table.Header>
+          <Table.Column id="variant" label="Variant" isRowHeader />
+          <Table.Column id="base" label="Base" />
+          <Table.Column id="disabled" label="Disabled" />
+          <Table.Column id="loading" label="Loading" />
+        </Table.Header>
+        <Table.Body>
+          {variantRows.map(row => (
+            <Table.Row key={row.id} id={row.id}>
+              <Table.Cell>{row.variant}</Table.Cell>
+              <Table.Cell className="bg-neutral-container">
+                <Button variant={row.variant}>Click me</Button>
+              </Table.Cell>
+              <Table.Cell>
+                <Button variant={row.variant} disabled>
+                  Click me
+                </Button>
+              </Table.Cell>
+              <Table.Cell>
+                <Button variant={row.variant} isLoading loadingLabel="Loading...">
+                  Click me
+                </Button>
+              </Table.Cell>
+            </Table.Row>
+          ))}
+        </Table.Body>
+      </Table.Grid>
+    </Table>
   )
 }

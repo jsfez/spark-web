@@ -4,9 +4,23 @@ import { ComponentPropsWithoutRef, type DOMAttributes, Ref, useMemo } from 'reac
 import { Slot, wrapPolymorphicSlot } from '../slot'
 import { Spinner, type SpinnerProps } from '../spinner'
 import { buttonStyles, type ButtonStylesProps } from './Button.styles'
+import { buttonVariantStyles, type ButtonVariantStylesProps } from './Button.variant-styles'
 
 export interface ButtonProps
-  extends Omit<ComponentPropsWithoutRef<'button'>, 'disabled'>, ButtonStylesProps {
+  extends
+    Omit<ComponentPropsWithoutRef<'button'>, 'disabled'>,
+    Omit<ButtonStylesProps, 'design' | 'intent'>,
+    Pick<ButtonVariantStylesProps, 'variant'> {
+  /**
+   * Main style of the button.
+   * @deprecated Use `variant` prop instead. Will be ignored when `variant` is specified.
+   */
+  design?: ButtonStylesProps['design']
+  /**
+   * Color scheme of the button.
+   * @deprecated Use `variant` prop instead. Will be ignored when `variant` is specified.
+   */
+  intent?: ButtonStylesProps['intent']
   /**
    * Change the component to the HTML tag or custom component of the only child.
    */
@@ -69,6 +83,7 @@ export const Button = ({
   asChild,
   className,
   underline = false,
+  variant,
   ref,
   ...others
 }: ButtonProps) => {
@@ -103,12 +118,15 @@ export const Button = ({
     ...(loadingLabel && { 'aria-label': loadingLabel }),
   }
 
-  return (
-    <Component
-      data-spark-component="button"
-      {...(Component === 'button' && { type: 'button' })}
-      ref={ref}
-      className={buttonStyles({
+  // Use variant styles when variant is specified, otherwise use legacy styles
+  const buttonClassName = variant
+    ? buttonVariantStyles({
+        className,
+        variant,
+        disabled: shouldNotInteract,
+        size,
+      })
+    : buttonStyles({
         className,
         design,
         disabled: shouldNotInteract,
@@ -116,7 +134,14 @@ export const Button = ({
         shape,
         size,
         underline,
-      })}
+      })
+
+  return (
+    <Component
+      data-spark-component="button"
+      {...(Component === 'button' && { type: 'button' })}
+      ref={ref}
+      className={buttonClassName}
       disabled={useNativeDisabled}
       aria-disabled={shouldNotInteract ? true : undefined}
       aria-busy={isLoading}

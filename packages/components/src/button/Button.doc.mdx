@@ -40,13 +40,38 @@ export default () => (
 
 ## Examples
 
-### Design and Intent
+### Variants
+
+Use the `variant` prop to set semantic button styles that combine both design and intent.
+
+The variant prop provides a simplified API for common button patterns:
+- `primary`: Main action with filled background
+- `secondary`: Secondary action with support color
+- `tertiary`: Tertiary action with outlined surface
+- `contrast`: Contrast action with surface background
+- `underline`: Link-style with underline
+- `success`: Success action with outlined style
+- `danger`: Danger action with outlined style
+- `boost`: Accent action with filled accent background
+- `AI`: AI action with filled AI background
+
+<Canvas of={ButtonStories.Variants} />
+
+<Callout kind="info">
+  When using the `variant` prop, both `design` and `intent` props are ignored. The `variant` prop is the recommended way to style buttons for common use cases.
+</Callout>
+
+### Design and Intent (Legacy)
 
 See all possible combinations of designs and intents in the table below.
 
 - Use `design` prop to set the different look and feels of a button.
 - Use `intent` prop to set the color intent of a button.
 - Use `underline` prop to set the underline style of a button.
+
+<Callout kind="warning">
+  The `design` and `intent` props are deprecated in favor of the `variant` prop. They are kept for backward compatibility but will be ignored when `variant` is specified.
+</Callout>
 
 <Canvas of={ButtonStories.DesignAndIntentTable} />
 
