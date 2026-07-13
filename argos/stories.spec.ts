@@ -29,6 +29,32 @@ for (const story of stories) {
       ).__STORYBOOK_PREVIEW__?.currentRender?.phase
       return phase === 'completed' || phase === 'finished'
     })
+    // Respect the repo's own `chromatic: { disableSnapshot: true }` story
+    // parameters (e.g. stories rendering random remote images).
+    const disableSnapshot = await page.evaluate(
+      () =>
+        (
+          window as unknown as {
+            __STORYBOOK_PREVIEW__?: {
+              currentRender?: {
+                story?: {
+                  parameters?: { chromatic?: { disableSnapshot?: boolean } }
+                }
+              }
+            }
+          }
+        ).__STORYBOOK_PREVIEW__?.currentRender?.story?.parameters?.chromatic
+          ?.disableSnapshot === true,
+    )
+    test.skip(disableSnapshot, 'story opts out of snapshots (chromatic parameter)')
+    // Carousels/scrolling lists may settle on a non-deterministic offset:
+    // pin every scroll position before capturing.
+    await page.evaluate(() => {
+      for (const el of Array.from(document.querySelectorAll('*'))) {
+        if (el.scrollLeft !== 0) el.scrollLeft = 0
+        if (el.scrollTop !== 0) el.scrollTop = 0
+      }
+    })
     // Spinners and skeletons legitimately keep aria-busy forever.
     const isLoadingState = /load(ing|er)|skeleton|spinner|progress/i.test(
       `${story.title} ${story.name}`,
