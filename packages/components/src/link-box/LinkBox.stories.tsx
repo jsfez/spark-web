@@ -25,7 +25,7 @@ export const Default: StoryFn = _args => (
     <LinkBox className="space-y-md" asChild>
       <article>
         <div className="bg-neutral relative aspect-square w-full overflow-hidden rounded-md shadow-md">
-          <img className="size-full" src="https://picsum.photos/200/200" alt="" />
+          <img className="size-full" src="https://picsum.photos/seed/spark/200/200" alt="" />
         </div>
 
         <div className="space-y-0">
@@ -47,7 +47,11 @@ export const Nesting: StoryFn = _args => (
     <LinkBox asChild>
       <article className="space-y-md">
         <div className="bg-neutral relative aspect-square w-full overflow-hidden rounded-md shadow-md">
-          <img className="size-full" src="https://picsum.photos/200/200" alt="Card image" />
+          <img
+            className="size-full"
+            src="https://picsum.photos/seed/spark/200/200"
+            alt="Card image"
+          />
 
           <LinkBox.Raised>
             <IconButton shape="pill" aria-label="Like" className="bottom-md right-md absolute!">
