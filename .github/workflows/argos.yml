@@ -1,0 +1,39 @@
+name: argos
+env:
+  FORCE_COLOR: 3
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  argos:
+    runs-on: ubuntu-latest
+    name: Visual testing
+    permissions:
+      contents: read
+      id-token: write
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Install
+        uses: ./.github/composite-actions/install
+
+      - name: Build Storybook
+        run: npm run storybook:build
+
+      - name: Install Playwright browser
+        run: npx playwright install --with-deps chromium
+
+      - name: Capture screenshots with Argos
+        run: npx playwright test --config=argos/playwright.config.ts
